@@ -18,7 +18,9 @@ RUN docker-php-ext-install -j$(nproc) bcmath
 RUN docker-php-ext-install -j$(nproc) ctype
 RUN docker-php-ext-install -j$(nproc) dom
 RUN docker-php-ext-install -j$(nproc) fileinfo
+RUN docker-php-ext-install -j$(nproc) mysqli
 RUN docker-php-ext-install -j$(nproc) pdo
+RUN docker-php-ext-install -j$(nproc) pdo_mysql
 RUN docker-php-ext-install -j$(nproc) xml
 
 RUN docker-php-ext-enable bcmath
