@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: nginx
+    container_name: demo-nginx-container
+    ports:
+      - 80:80
+    depends_on:
+      - php
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
+
+  php:
+    build: php
+    container_name: demo-php-container
+    expose:
+      - 9000
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
