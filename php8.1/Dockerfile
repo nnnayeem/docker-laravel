@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
         curl \
         openssl
 
+
+RUN docker-php-ext-configure intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install -j$(nproc) bcmath
 RUN docker-php-ext-install -j$(nproc) ctype
@@ -37,4 +39,5 @@ RUN pecl install protobuf
 
 RUN docker-php-ext-enable grpc
 RUN docker-php-ext-enable protobuf
-
+RUN docker-php-ext-install intl
+RUN docker-php-ext-install pcntl

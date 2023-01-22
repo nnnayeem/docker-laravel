@@ -35,7 +35,7 @@ services:
       - ./src/:/var/www/
 
   mysql_db:
-    image: mysql
+    image: mysql:8.0.31
     container_name: dev-mysql-container
     ports:
       - 3307:3306
@@ -43,4 +43,6 @@ services:
     volumes:
       - ./db/mysql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_USER: nayeem
+        MYSQL_PASSWORD: password
