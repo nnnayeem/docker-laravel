@@ -31,3 +31,13 @@ You can install your required version easily.
 ```
 docker exec -it -w /var/www/project_id php8.1-container-name pwd
 ```
+
+## ENV DB Connection
+```
+DB_CONNECTION=mysql
+DB_HOST="mysql_db"
+DB_PORT=3306
+DB_DATABASE=db_name
+DB_USERNAME=root
+DB_PASSWORD=root
+```
