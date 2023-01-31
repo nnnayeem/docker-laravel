@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
         zip \
         unzip \
         curl \
-        openssl
+        openssl \
+        libzip-dev \
 
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
@@ -25,6 +26,8 @@ RUN docker-php-ext-install -j$(nproc) mysqli
 RUN docker-php-ext-install -j$(nproc) pdo
 RUN docker-php-ext-install -j$(nproc) pdo_mysql
 RUN docker-php-ext-install -j$(nproc) xml
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-install -j$(nproc) zip
 
 RUN docker-php-ext-enable bcmath
 RUN docker-php-ext-enable ctype
