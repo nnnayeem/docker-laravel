@@ -4,7 +4,6 @@ services:
   nginx:
     build: nginx
     container_name: nginx-container
-    user: "${UID}:${GID}"
     restart: unless-stopped
     ports:
       - 8080:80
@@ -50,10 +49,9 @@ services:
   mysql_db:
     image: mariadb:latest
     container_name: dev-mysql-container
-    user: "${UID}:${GID}"
     command: --default-authentication-plugin=mysql_native_password
     ports:
-      - 3306:3306
+      - 3308:3306
     restart: unless-stopped
     volumes:
       - ./db/mysql:/var/lib/mysql

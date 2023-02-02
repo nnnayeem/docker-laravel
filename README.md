@@ -32,6 +32,15 @@ You can install your required version easily.
 docker exec -it -w /var/www/project_id php8.1-container-name pwd
 ```
 
+## Build using docker-compose
+```
+env GID=$(id -g) UID=$(id -u) docker-compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g)
+```
+## Start containers using docker-compose
+```
+env GID=$(id -g) UID=$(id -u) docker-compose up -d
+```
+
 ## ENV DB Connection
 ```
 DB_CONNECTION=mysql

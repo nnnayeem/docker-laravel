@@ -14,34 +14,40 @@ RUN apt-get update && apt-get install -y \
         unzip \
         curl \
         openssl \
-        libzip-dev
-
-RUN docker-php-ext-configure intl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install -j$(nproc) bcmath
-RUN docker-php-ext-install -j$(nproc) ctype
-RUN docker-php-ext-install -j$(nproc) dom
-RUN docker-php-ext-install -j$(nproc) fileinfo
-RUN docker-php-ext-install -j$(nproc) mysqli
-RUN docker-php-ext-install -j$(nproc) pdo
-RUN docker-php-ext-install -j$(nproc) pdo_mysql
-RUN docker-php-ext-install -j$(nproc) xml
-RUN docker-php-ext-install -j$(nproc) gd
-RUN docker-php-ext-install -j$(nproc) zip
-
-RUN docker-php-ext-enable bcmath
-RUN docker-php-ext-enable ctype
-RUN docker-php-ext-enable dom
-RUN docker-php-ext-enable fileinfo
-RUN docker-php-ext-enable pdo
-RUN docker-php-ext-enable xml
+        libzip-dev \
+        && docker-php-ext-configure intl \
+        && docker-php-ext-configure gd \
+        && docker-php-ext-install -j$(nproc) bcmath \
+        ctype \
+        dom \
+        fileinfo \
+        mysqli \
+        pdo \
+        pdo_mysql \
+        xml \
+        gd \
+        zip \
+        && docker-php-ext-enable bcmath \
+        ctype \
+        dom \
+        fileinfo \
+        pdo \
+        xml \
+        && docker-php-ext-install intl pcntl \
+        && pecl install grpc protobuf \
+        && docker-php-ext-enable grpc protobuf
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-RUN pecl install grpc
-RUN pecl install protobuf
+ARG UNAME=nayeem
+ARG UGROUP=nayeem
+ARG UID=1000
+ARG GID=1000
+RUN useradd -ms /bin/bash $UNAME
+RUN usermod  --uid $UID $UNAME
+RUN groupmod --gid $GID $UGROUP
 
-RUN docker-php-ext-enable grpc
-RUN docker-php-ext-enable protobuf
-RUN docker-php-ext-install intl
-RUN docker-php-ext-install pcntl
+RUN chown $UNAME:$UNAME -R /var/www
+RUN chmod 777 -R /var/www
+USER $USER
+WORKDIR /var/www
