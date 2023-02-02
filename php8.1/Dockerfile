@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
         unzip \
         curl \
         openssl \
-        libzip-dev \
+        libzip-dev
 
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
