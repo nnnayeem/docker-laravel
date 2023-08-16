@@ -14,7 +14,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./src/:/var/www/
     networks:
-      - lara_net
+      - lara_net 
 
   php8.1:
     build: php8.1
@@ -46,6 +46,21 @@ services:
     networks:
       - lara_net
 
+  php7.2:
+    build: php7.2
+    restart: unless-stopped
+    container_name: php7.2-container
+    user: "${UID}:${GID}"
+    depends_on:
+      - mysql_db
+    expose:
+      - 9000
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
+    networks:
+      - lara_net
+
   mysql_db:
     image: mariadb:latest
     container_name: dev-mysql-container
@@ -63,3 +78,7 @@ services:
 networks:
   lara_net:
     driver: bridge
+    name: lara_net
+    external: true
+
+    

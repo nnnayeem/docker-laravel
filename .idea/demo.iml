@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/MoveOn" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ed" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/import" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instagram-integration-task" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/pakckages" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/pilot" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/rtbd" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/vent" isTestSource="false" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
