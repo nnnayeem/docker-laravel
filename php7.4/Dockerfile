@@ -51,5 +51,3 @@ RUN chown $UNAME:$UNAME -R /var/www
 RUN chmod 777 -R /var/www
 USER $USER
 WORKDIR /var/www
-
-
