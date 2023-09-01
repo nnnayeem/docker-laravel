@@ -47,6 +47,21 @@ services:
     networks:
       - lara_net
 
+  php7.4:
+    build: php7.4
+    container_name: php7.4-container
+    user: "${UID}:${GID}"
+    restart: unless-stopped
+    depends_on:
+      - mysql_db
+    expose:
+      - 9000
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
+    networks:
+      - lara_net
+
   php7.2:
     build: php7.2
     container_name: php7.2-container

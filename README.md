@@ -34,11 +34,11 @@ docker exec -it -w /var/www/project_id php8.1-container-name pwd
 
 ## Build using docker-compose
 ```
-env GID=$(id -g) UID=$(id -u) docker-compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g)
+env GID=$(id -g) UID=$(id -u) UNAME=nayeem UGROUP=nayeem docker-compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g) --build-arg UNAME=nayeem --build-arg UGROUP=nayeem
 ```
 ## Start containers using docker-compose
 ```
-env GID=$(id -g) UID=$(id -u) docker-compose up -d
+env GID=$(id -g) UID=$(id -u) UNAME=nayeem UGROUP=nayeem docker-compose up -d
 ```
 
 ## ENV DB Connection
