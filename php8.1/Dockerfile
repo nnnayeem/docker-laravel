@@ -1,27 +1,41 @@
+FROM php:8.1 AS build
+
+RUN apt-get update
+RUN apt-get install -y libgrpc-dev
+RUN apt-get install -y libprotobuf-dev
+RUN apt-get install -y autoconf
+RUN apt-get install -y zlib1g-dev
+#RUN apt-get install -y php-dev
+#RUN apt-get install -y php-pear
+RUN pecl install grpc protobuf
+
 FROM php:8.1.13-fpm
 
-RUN apt-get update && apt-get install -y mariadb-client && rm -rf /var/lib/apt
+RUN apt-get update
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-apt apt-get update && apt-get install -y \
-		libfreetype6-dev \
-		libjpeg62-turbo-dev \
-		libpng-dev \
-        autoconf \
-        zlib1g-dev \
-        libxml2-dev \
-        git \
-        zip \
-        unzip \
-        curl \
-        openssl \
-        libzip-dev
+RUN apt-get install -y mariadb-client
+#RUN apt-get install libfreetype6-dev
+RUN apt-get install -y libjpeg62-turbo-dev
+RUN apt-get install -y libpng-dev
+RUN apt-get install -y autoconf
+RUN apt-get install -y zlib1g-dev
+RUN apt-get install -y libxml2-dev
+RUN apt-get install -y git
+RUN apt-get install -y zip
+RUN apt-get install -y unzip
+RUN apt-get install -y curl
+RUN apt-get install -y openssl
+RUN apt-get install -y libzip-dev
 
 RUN docker-php-ext-configure intl
-RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-gd docker-php-ext-configure gd \
-                   --with-jpeg \
-                   --with-freetype
+#RUN -docker-php-ext-configure gd \
+#                   --with-jpeg \
+#                   --with-freetype
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-install docker-php-ext-install -j$(nproc) bcmath \
+RUN set -e; docker-php-ext-configure gd --with-jpeg
+RUN docker-php-ext-install -j$(nproc) gd
+
+RUN docker-php-ext-install -j$(nproc) bcmath \
         ctype \
         dom \
         fileinfo \
@@ -33,7 +47,7 @@ RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-install doc
         zip \
         exif
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-enable docker-php-ext-enable bcmath \
+RUN docker-php-ext-enable bcmath \
         ctype \
         dom \
         fileinfo \
@@ -41,9 +55,10 @@ RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-enable dock
         xml \
         exif
 
-RUN  --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-intl-gd docker-php-ext-install intl pcntl gd
-RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-grpc MAKEFLAGS="-j $(nproc)" pecl install grpc protobuf \
-        && docker-php-ext-enable grpc protobuf gd
+RUN  docker-php-ext-install intl pcntl gd
+COPY --from=build /usr/local/lib/php/extensions/no-debug-non-zts-20210902/grpc.so /usr/local/lib/php/extensions/no-debug-non-zts-20210902/
+COPY --from=build /usr/local/lib/php/extensions/no-debug-non-zts-20210902/protobuf.so /usr/local/lib/php/extensions/no-debug-non-zts-20210902/
+RUN docker-php-ext-enable grpc protobuf gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
