@@ -1,6 +1,7 @@
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y mariadb-client && rm -rf /var/lib/apt
+RUN apt-get update
+RUN apt-get install -y mariadb-client && rm -rf /var/lib/apt
 
 RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-apt apt-get update && apt-get install -y \
 		libfreetype6-dev \
