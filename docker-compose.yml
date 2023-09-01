@@ -9,15 +9,47 @@ services:
       - 8080:80
     depends_on:
       - php8.1
+      - php8.2
+      - php7.2
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./src/:/var/www/
     networks:
       - lara_net 
 
+  php8.2:
+    build: php8.2
+    container_name: php8.2-container
+    user: "${UID}:${GID}"
+    restart: unless-stopped
+    depends_on:
+      - mysql_db
+    expose:
+      - 9000
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
+    networks:
+      - lara_net
+
   php8.1:
     build: php8.1
     container_name: php8.1-container
+    user: "${UID}:${GID}"
+    restart: unless-stopped
+    depends_on:
+      - mysql_db
+    expose:
+      - 9000
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
+    networks:
+      - lara_net
+
+  php7.2:
+    build: php7.2
+    container_name: php7.2-container
     user: "${UID}:${GID}"
     restart: unless-stopped
     depends_on:
