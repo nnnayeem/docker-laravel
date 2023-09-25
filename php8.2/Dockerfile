@@ -1,3 +1,14 @@
+FROM php:8.2 AS build
+
+RUN apt-get update
+
+RUN mkdir -p /home/extensions
+
+RUN pecl install mongodb
+
+RUN PHP_EXT_DIR=$(php -r 'echo ini_get("extension_dir");') && cp $PHP_EXT_DIR/*mongodb.so /home/extensions/
+RUN echo $(ls -al /home/extensions)
+
 FROM php:8.2-fpm
 
 RUN apt-get update
@@ -42,8 +53,15 @@ RUN docker-php-ext-enable bcmath \
         xml \
         exif
 
+
+RUN mkdir -p /home/extensions
+COPY --from=build /home/extensions/mongodb.so /home/extensions
+RUN PHP_EXT_DIR=$(php -r 'echo ini_get("extension_dir");') && cp /home/extensions/*mongodb.so $PHP_EXT_DIR
+RUN rm -rf /home/extensions
+
 RUN  docker-php-ext-install gd
-RUN docker-php-ext-enable gd
+
+RUN docker-php-ext-enable gd mongodb
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 

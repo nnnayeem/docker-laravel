@@ -1,15 +1,28 @@
 FROM php:8.1 AS build
 
+# Get the extension directory and store it in a variable
+
+
 RUN apt-get update
-RUN apt-get install -y libgrpc-dev
-RUN apt-get install -y libprotobuf-dev
 RUN apt-get install -y autoconf
 RUN apt-get install -y zlib1g-dev
 #RUN apt-get install -y php-dev
 #RUN apt-get install -y php-pear
-RUN pecl install grpc protobuf
+RUN pecl install grpc protobuf mongodb
+
+RUN mkdir -p /home/extensions
+
+RUN pecl install mongodb grpc protobuf
+
+RUN PHP_EXT_DIR=$(php -r 'echo ini_get("extension_dir");')  \
+    && cp $PHP_EXT_DIR/*grpc.so /home/extensions/ \
+    && cp $PHP_EXT_DIR/*protobuf.so /home/extensions/ \
+    && cp $PHP_EXT_DIR/*mongodb.so /home/extensions/
+
 
 FROM php:8.1.13-fpm
+
+
 
 RUN apt-get update
 
@@ -56,9 +69,19 @@ RUN docker-php-ext-enable bcmath \
         exif
 
 RUN  docker-php-ext-install intl pcntl gd
-COPY --from=build /usr/local/lib/php/extensions/no-debug-non-zts-20210902/grpc.so /usr/local/lib/php/extensions/no-debug-non-zts-20210902/
-COPY --from=build /usr/local/lib/php/extensions/no-debug-non-zts-20210902/protobuf.so /usr/local/lib/php/extensions/no-debug-non-zts-20210902/
-RUN docker-php-ext-enable grpc protobuf gd
+
+
+RUN mkdir -p /home/extensions
+COPY --from=build /home/extensions/mongodb.so /home/extensions
+COPY --from=build /home/extensions/grpc.so /home/extensions
+COPY --from=build /home/extensions/protobuf.so /home/extensions
+RUN PHP_EXT_DIR=$(php -r 'echo ini_get("extension_dir");') \
+    && cp /home/extensions/*mongodb.so $PHP_EXT_DIR \
+    && cp /home/extensions/*grpc.so $PHP_EXT_DIR \
+    && cp /home/extensions/*protobuf.so $PHP_EXT_DIR
+RUN rm -rf /home/extensions
+
+RUN docker-php-ext-enable grpc protobuf gd mongodb
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
