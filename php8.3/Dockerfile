@@ -1,9 +1,9 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 RUN apt-get update
 RUN apt-get install -y mariadb-client && rm -rf /var/lib/apt
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-apt apt-get update && apt-get install -y \
+RUN --mount=type=cache,target=/var/cache/docker/php8.3-container-apt apt-get update && apt-get install -y \
 		libfreetype6-dev \
 		libjpeg62-turbo-dev \
 		libpng-dev \
@@ -19,13 +19,12 @@ RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-apt apt-get upd
         libmagickwand-dev
 
 RUN docker-php-ext-configure intl
-RUN pecl install imagick
 
 RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-gd docker-php-ext-configure gd \
                    --with-jpeg \
                    --with-freetype
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-ext-install docker-php-ext-install -j$(nproc) bcmath \
+RUN --mount=type=cache,target=/var/cache/docker/php8.3-container-ext-install docker-php-ext-install -j$(nproc) bcmath \
         ctype \
         dom \
         fileinfo \
@@ -38,14 +37,13 @@ RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-ext-install doc
         exif \
         intl
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-ext-enable docker-php-ext-enable bcmath \
+RUN --mount=type=cache,target=/var/cache/docker/php8.3-container-ext-enable docker-php-ext-enable bcmath \
         ctype \
         dom \
         fileinfo \
         pdo \
         xml \
-        exif \
-        imagick
+        exif
 
 RUN  docker-php-ext-install gd
 RUN docker-php-ext-enable gd
