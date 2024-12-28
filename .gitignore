@@ -1,2 +1,2 @@
 .idea/*
-db/mysql/*
+db/mysql/*.idea
