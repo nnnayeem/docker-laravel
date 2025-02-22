@@ -1,66 +1,73 @@
 FROM php:8.2-fpm
 
-RUN apt-get update
-RUN apt-get install -y mariadb-client && rm -rf /var/lib/apt
+# Update package repository and install required dependencies
+RUN apt-get update && apt-get install -y \
+    mariadb-client \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    autoconf \
+    zlib1g-dev \
+    libxml2-dev \
+    git \
+    zip \
+    unzip \
+    curl \
+    openssl \
+    libzip-dev \
+    libmagickwand-dev
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-apt apt-get update && apt-get install -y \
-		libfreetype6-dev \
-		libjpeg62-turbo-dev \
-		libpng-dev \
-        autoconf \
-        zlib1g-dev \
-        libxml2-dev \
-        git \
-        zip \
-        unzip \
-        curl \
-        openssl \
-        libzip-dev \
-        libmagickwand-dev
+# Install and configure PHP extensions
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-configure gd --with-jpeg --with-freetype
 
-RUN docker-php-ext-configure intl
-RUN pecl install imagick
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-gd docker-php-ext-configure gd \
-                   --with-jpeg \
-                   --with-freetype
+RUN docker-php-ext-install -j$(nproc) \
+    bcmath \
+    ctype \
+    dom \
+    exif \
+    fileinfo \
+    gd \
+    intl \
+    mysqli \
+    pdo \
+    pdo_mysql \
+    xml \
+    zip \
+    pcntl
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-ext-install docker-php-ext-install -j$(nproc) bcmath \
-        ctype \
-        dom \
-        fileinfo \
-        mysqli \
-        pdo \
-        pdo_mysql \
-        xml \
-        gd \
-        zip \
-        exif \
-        intl
+# Ensure all necessary extensions are enabled
+RUN docker-php-ext-enable \
+    bcmath \
+    ctype \
+    dom \
+    exif \
+    fileinfo \
+    gd \
+    imagick \
+    intl \
+    mysqli \
+    pdo \
+    xml \
+    zip
 
-RUN --mount=type=cache,target=/var/cache/docker/php8.2-container-ext-enable docker-php-ext-enable bcmath \
-        ctype \
-        dom \
-        fileinfo \
-        pdo \
-        xml \
-        exif \
-        imagick
-
-RUN  docker-php-ext-install gd
-RUN docker-php-ext-enable gd
-
+# Copy composer from the composer image
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+# Configure user and working directory
 ARG UNAME=nayeem
 ARG UGROUP=nayeem
 ARG UID=1000
 ARG GID=1000
-RUN useradd -ms /bin/bash $UNAME
-RUN usermod  --uid $UID $UNAME
-RUN groupmod --gid $GID $UGROUP
+RUN useradd -ms /bin/bash $UNAME \
+    && usermod --uid $UID $UNAME \
+    && groupmod --gid $GID $UGROUP
 
-RUN chown $UNAME:$UNAME -R /var/www
-RUN chmod 777 -R /var/www
-USER $USER
+RUN chown $UNAME:$UNAME -R /var/www \
+    && chmod 777 -R /var/www
+
+USER $UNAME
 WORKDIR /var/www
