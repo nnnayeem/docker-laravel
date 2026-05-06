@@ -33,17 +33,21 @@ RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-install doc
         zip \
         exif
 
+
+
+RUN  --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-intl-gd docker-php-ext-install intl pcntl gd
+# RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-grpc MAKEFLAGS="-j $(nproc)" pecl install grpc protobuf \
+#         && docker-php-ext-enable grpc protobuf gd
+
 RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-enable docker-php-ext-enable bcmath \
         ctype \
         dom \
         fileinfo \
         pdo \
         xml \
-        exif
+        exif \
+        gd
 
-RUN  --mount=type=cache,target=/var/cache/docker/php8.1-container-ext-intl-gd docker-php-ext-install intl pcntl gd
-RUN --mount=type=cache,target=/var/cache/docker/php8.1-container-grpc MAKEFLAGS="-j $(nproc)" pecl install grpc protobuf \
-        && docker-php-ext-enable grpc protobuf gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 

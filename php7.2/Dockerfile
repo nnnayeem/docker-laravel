@@ -1,6 +1,11 @@
-FROM php:7.2-fpm
+FROM php:7.2.34-fpm
 
-RUN apt-get update && apt-get install -y \
+RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian-security/ buster/updates main" >> /etc/apt/sources.list \
+    && apt-get update && apt-get install -y --fix-missing lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --fix-missing \
 		libfreetype6-dev \
 		libjpeg62-turbo-dev \
 		libpng-dev \
@@ -12,7 +17,8 @@ RUN apt-get update && apt-get install -y \
         zip \
         unzip \
         curl \
-        openssl
+        openssl \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd
 RUN docker-php-ext-install -j$(nproc) bcmath \
@@ -49,7 +55,7 @@ RUN groupmod --gid $GID $UGROUP
 
 RUN chown $UNAME:$UNAME -R /var/www
 RUN chmod 777 -R /var/www
-USER $USER
+USER $UNAME
 WORKDIR /var/www
 
 
