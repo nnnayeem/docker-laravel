@@ -27,6 +27,7 @@ You can install your required version easily.
 - All projects will be at `/var/www` directory in nginx container
 - `docker compose up -d`
 - After adding config.d edit host file
+- In order to point all your virtual domain to host use *localhost 
 
 ## Commands inside container
 ```
@@ -51,3 +52,4 @@ DB_DATABASE=db_name
 DB_USERNAME=root
 DB_PASSWORD=root
 ```
+
