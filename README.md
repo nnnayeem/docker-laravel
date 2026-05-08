@@ -26,6 +26,7 @@ You can install your required version easily.
 - In nginx conf.d create virtual domain
 - All projects will be at `/var/www` directory in nginx container
 - `docker compose up -d`
+- After adding config.d edit host file
 
 ## Commands inside container
 ```
