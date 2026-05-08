@@ -119,18 +119,6 @@ services:
     networks:
       - lara_net
 
-  dnsmasq:
-    image: strm/dnsmasq
-    container_name: dnsmasq
-    ports:
-      - "53:53/udp"
-      - "53:53/tcp"
-    volumes:
-      - ./dnsmasq.conf:/etc/dnsmasq.conf
-    cap_add:
-      - NET_ADMIN
-    restart: unless-stopped
-
 networks:
   lara_net:
     driver: bridge
