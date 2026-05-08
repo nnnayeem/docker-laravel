@@ -51,3 +51,36 @@ DB_DATABASE=db_name
 DB_USERNAME=root
 DB_PASSWORD=root
 ```
+
+## DNS MASQ Configuration on UBUNTU:
+```
+sudo nano /etc/systemd/resolved.conf
+```
+Add thes in resolved.conf
+```
+[Resolve]
+DNSStubListener=no
+DNS=127.0.0.1
+Domains=~test
+```
+
+## Then restart systemd-resolved
+```
+sudo systemctl restart systemd-resolved
+```
+
+## Restart docker container
+```
+docker restart dnsmasq
+```
+## Edit dnsmasq config
+```
+address=/.test/127.0.0.1
+server=8.8.8.8
+listen-address=0.0.0.0
+bind-interfaces
+```
+## Restart docker container
+```
+docker restart dnsmasq
+```
