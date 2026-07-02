@@ -77,6 +77,21 @@ services:
     networks:
       - lara_net
 
+  php8.0:
+    build: php8.0
+    container_name: php8.0-container
+    user: "${UID}:${GID}"
+    restart: unless-stopped
+    depends_on:
+      - mysql_db
+    expose:
+      - 9000
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/:/var/www/
+    networks:
+      - lara_net
+
   php7.4:
     build: php7.4
     restart: unless-stopped
